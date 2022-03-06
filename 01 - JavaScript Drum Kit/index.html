@@ -58,24 +58,32 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  function removeTransition(e) {
-    if (e.propertyName !== 'transform') return;
-    e.target.classList.remove('playing');
-  }
-
-  function playSound(e) {
-    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
-    if (!audio) return;
-
-    key.classList.add('playing');
-    audio.currentTime = 0;
-    audio.play();
-  }
-
-  const keys = Array.from(document.querySelectorAll('.key'));
-  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
   window.addEventListener('keydown', playSound);
+  
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key='${e.keyCode}']`);
+    const key = document.querySelector(`div[data-key='${e.keyCode}']`);
+    
+    if (!audio) return; // stops the function if no audio elem with matching keycode
+
+
+    // handle audio
+    audio.currentTime = 0; // rewinds audio to the start to support multiple keypresses
+    audio.play();
+    
+    // handle css toggling
+    key.classList.add('playing')
+  }
+  function removePlayHighlight(e) {
+    // just picking one of the transitionend events and ignore others
+    // usually pick the event that takes the longest
+    if (e.propertyName !== 'transform') return; 
+    
+    e.target.classList.remove('playing')
+  }
+
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removePlayHighlight));
 </script>
 
 
